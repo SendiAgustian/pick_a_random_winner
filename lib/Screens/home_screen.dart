@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_tagging/flutter_tagging.dart';
+import 'package:pick_a_random_winner/Screens/winner_detail.dart';
 import 'package:pick_a_random_winner/models/name_data.dart';
 import 'package:pick_a_random_winner/utils/color_app_utils.dart';
 
@@ -11,9 +12,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String _selectedValuesJson = 'Nothing to show';
   List<ParticipantsName> _participantsNameList = [];
-  String _displayName;
+  String _displayName, _selectedValuesJson = 'Nothing to show';
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +104,13 @@ class _HomeScreenState extends State<HomeScreen> {
               child: InkWell(
                 borderRadius: BorderRadius.circular(50),
                 onTap: () async {
-                  _startRandomParticipans().then((value) => _dialogWinner());
+                  _startRandomParticipans().then(
+                    (value) => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => WinnerDetailScreen(value),
+                      ),
+                    ),
+                  );
                 },
                 child: Container(
                   height: 80,
@@ -138,50 +144,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _dialogWinner() {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: false,
-      transitionDuration: Duration(milliseconds: 150),
-      barrierLabel: '',
-      barrierColor: Colors.black.withOpacity(0.6),
-      pageBuilder: (context, animation1, animation2) {
-        return Container();
-      },
-      transitionBuilder: (BuildContext context, a1, a2, widget) {
-        return Transform.scale(
-          scale: a1.value,
-          child: Opacity(
-            opacity: a1.value,
-            child: AlertDialog(
-              title: Text('Pemenangnya adalah'),
-              content: Text(_displayName),
-              actions: [
-                FlatButton(
-                  onPressed: () {
-                    setState(() {
-                      _displayName = '-';
-                    });
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('Ok'),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   Future<String> _startRandomParticipans() async {
     final _random = new Random();
-    int _index = 0;
     for (int i = 0; i < 50; i++) {
       ParticipantsName _winner =
           _participantsNameList[_random.nextInt(_participantsNameList.length)];
-      print(_index);
-      print(_winner.name);
       setState(() {
         _displayName = _winner.name;
       });

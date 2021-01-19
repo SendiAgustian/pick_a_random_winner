@@ -3,13 +3,11 @@ import 'package:flutter_tagging/flutter_tagging.dart';
 class ParticipantsName extends Taggable {
   final String name;
 
-  /// Creates Name
   ParticipantsName({this.name});
 
   @override
   List<Object> get props => [name];
 
-  /// Converts the class to json string.
   String toJson() => '''  {
     "Name": $name,\n
   }''';
